@@ -22,6 +22,7 @@ import sodium from "react-native-libsodium";
 import bint from 'bint8array';
 import "./shim.js";
 import crypto from "crypto";
+import {SDK} from "@synonymdev/slashtags-sdk";
 
 const doSodium = async () => {
   try {
@@ -47,8 +48,16 @@ const doCrypto = async () => {
   }
 };
 
-const doSlashtags = () => {
-  alert("TODO");
+const doSlashtags = async () => {
+  try {
+    const sdk = await SDK.init({ persist: false, swarmOpts: {relays: ['ws://localhost:8888'] } });
+
+    const slashtag = await sdk.slashtag({ name: "a_real_rn_slashtag" });
+    
+    alert(slashtag.url.toString());
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 const App = () => {
@@ -57,7 +66,7 @@ const App = () => {
       <ScrollView contentInsetAdjustmentBehavior="automatic">
       <Button title='Do a libsodium' onPress={doSodium} />
       <Button title='Do a crypto' onPress={doCrypto} />
-        <Button title='Do a slashtag' onPress={doSlashtags} />
+      <Button title='Do a slashtag' onPress={doSlashtags} />
       </ScrollView>
     </SafeAreaView>
   );
