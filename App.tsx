@@ -18,7 +18,22 @@ import {
   View,
 } from 'react-native';
 
-const doIt = () => {
+import sodium from "react-native-libsodium";
+import bint from 'bint8array';
+
+const doSodium = async () => {
+  try {
+    const rand = new Uint8Array(32);
+    sodium.randombytes_buf(rand);
+    const hex = bint.toString(rand, 'hex');
+
+    alert(hex);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const doSlashtags = () => {
   alert("TODO");
 };
 
@@ -26,7 +41,8 @@ const App = () => {
   return (
     <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <Button title='Do a slashtag' onPress={doIt} />
+      <Button title='Do a libsodium' onPress={doSodium} />
+        <Button title='Do a slashtag' onPress={doSlashtags} />
       </ScrollView>
     </SafeAreaView>
   );
