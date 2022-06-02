@@ -20,6 +20,8 @@ import {
 
 import sodium from "react-native-libsodium";
 import bint from 'bint8array';
+import "./shim.js";
+import crypto from "crypto";
 
 const doSodium = async () => {
   try {
@@ -28,6 +30,18 @@ const doSodium = async () => {
     const hex = bint.toString(rand, 'hex');
 
     alert(hex);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const doCrypto = async () => {
+  try {
+    const hash = crypto.createHmac('sha256', 'password')
+    .update("something_random_123")
+    .digest('hex');
+
+    alert(hash);
   } catch (e) {
     console.error(e);
   }
@@ -42,6 +56,7 @@ const App = () => {
     <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
       <Button title='Do a libsodium' onPress={doSodium} />
+      <Button title='Do a crypto' onPress={doCrypto} />
         <Button title='Do a slashtag' onPress={doSlashtags} />
       </ScrollView>
     </SafeAreaView>
