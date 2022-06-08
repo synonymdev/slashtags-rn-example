@@ -1,0 +1,15 @@
+Possible Unhandled Promise Rejection (id: 0):
+TypeError: Invalid attempt to iterate non-iterable instance.
+In order to be iterable, non-array objects must have a [Symbol.iterator]() method.
+TypeError: Invalid attempt to iterate non-iterable instance.
+In order to be iterable, non-array objects must have a [Symbol.iterator]() method.
+    at _createForOfIteratorHelperLoose (/Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:171629:454)
+    at PeerDiscovery._refresh$ (/Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:171700:29)
+    at tryCatch (/Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:24003:19)
+    at Generator._invoke (/Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:23983:26)
+    at Generator.next (/Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:24034:23)
+    at tryCatch (/Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:24003:19)
+    at invoke (/Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:24041:22)
+    at /Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:24065:13
+    at tryCallTwo (/Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:28460:7)
+    at doResolve (/Users/ward/code/play/slashtags-rn-example/.vscode/.react/index.bundle:28624:15)

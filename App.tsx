@@ -18,11 +18,17 @@ import {
   View,
 } from 'react-native';
 
-import sodium from "react-native-libsodium";
+import sodium from 'react-native-libsodium';
 import bint from 'bint8array';
 import "./shim.js";
 import crypto from "crypto";
+import './shim.js';
+import 'react-native-url-polyfill/auto';
+
+
 import {SDK} from "@synonymdev/slashtags-sdk";
+import {DHT} from 'dht-universal';
+import Hyperswarm from 'hyperswarm';
 import {EventEmitter} from 'events';
 
 const doSodium = async () => {
@@ -39,9 +45,10 @@ const doSodium = async () => {
 
 const doCrypto = async () => {
   try {
-    const hash = crypto.createHmac('sha256', 'password')
-    .update("something_random_123")
-    .digest('hex');
+    const hash = crypto
+      .createHmac('sha256', 'password')
+      .update('something_random_123')
+      .digest('hex');
 
     alert(hash);
   } catch (e) {
@@ -49,13 +56,76 @@ const doCrypto = async () => {
   }
 };
 
+const doDHT = async () => {
+  const dhtA = await DHT.create({
+    relays: ['ws://localhost:8888'],
+  });
+  await dhtA.ready();
+
+  const server = dhtA.createServer(conn => {
+    alert('Got connection');
+  });
+  await server.listen();
+
+  const dhtB = await DHT.create({
+    relays: ['ws://localhost:8888'],
+  });
+  await dhtB.ready();
+
+  await dhtB.connect(server.address().publicKey);
+};
+
+const doSwarm = async () => {
+  const swarmA = new Hyperswarm({
+    dht: await DHT.create({
+      relays: ['ws://localhost:8888'],
+    }),
+  });
+
+  const topic = swarmA.keyPair.publicKey;
+
+  swarmA.on('connection', conn => {
+    alert('Got connection');
+  });
+
+  await swarmA.join(topic).flushed();
+
+  const swarmB = new Hyperswarm({
+    dht: await DHT.create({
+      relays: ['ws://localhost:8888'],
+    }),
+  });
+
+  swarmB.join(topic);
+
+  await swarmB.flush();
+};
+
 const doSlashtags = async () => {
   try {
-    const sdk = await SDK.init({ persist: false, swarmOpts: {relays: ['ws://localhost:8888'] } });
+    const sdkA = await SDK.init({
+      persist: false,
+      swarmOpts: {relays: ['ws://localhost:8888']},
+    });
 
-    const slashtag = await sdk.slashtag({ name: "a_real_rn_slashtag" });
-    
-    alert(slashtag.url.toString());
+    const alice = await sdkA.slashtag({name: 'alice'});
+
+    await alice.setProfile({name: 'Alice'});
+
+    console.log(alice.url.toString());
+
+    const sdkB = await SDK.init({
+      persist: false,
+      swarmOpts: {relays: ['ws://localhost:8888']},
+    });
+
+    const remoteAlice = await sdkB.slashtag({url: alice.url.toString()});
+    await remoteAlice.ready();
+    console.log('REMOTE ALICE connected:', remoteAlice.publicDrive?.online);
+
+    const profile = await remoteAlice.getProfile();
+    console.log(profile);
+    alert(profile);
   } catch (e) {
     console.error(e);
   }
@@ -65,9 +135,11 @@ const App = () => {
   return (
     <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <Button title='Do a libsodium' onPress={doSodium} />
-      <Button title='Do a crypto' onPress={doCrypto} />
-      <Button title='Do a slashtag' onPress={doSlashtags} />
+        <Button title="Do a libsodium" onPress={doSodium} />
+        <Button title="Do a crypto" onPress={doCrypto} />
+        <Button title="Do a DHT" onPress={doDHT} />
+        <Button title="Do a Swarm" onPress={doSwarm} />
+        <Button title="Do a slashtag" onPress={doSlashtags} />
       </ScrollView>
     </SafeAreaView>
   );
