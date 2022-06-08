@@ -23,6 +23,7 @@ import bint from 'bint8array';
 import "./shim.js";
 import crypto from "crypto";
 import {SDK} from "@synonymdev/slashtags-sdk";
+import {EventEmitter} from 'events';
 
 const doSodium = async () => {
   try {
