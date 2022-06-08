@@ -20,18 +20,16 @@ import {
 
 import sodium from 'react-native-libsodium';
 import bint from 'bint8array';
-import "./shim.js";
-import crypto from "crypto";
+import './shim.js';
+import crypto from 'crypto';
 import './shim.js';
 import 'react-native-url-polyfill/auto';
 
-
-import {SDK} from "@synonymdev/slashtags-sdk";
+import {SDK} from '@synonymdev/slashtags-sdk';
 import {DHT} from 'dht-universal';
 import Hyperswarm from 'hyperswarm';
-import {EventEmitter} from 'events';
 
-const doSodium = async () => {
+const doSodium = () => {
   try {
     const rand = new Uint8Array(32);
     sodium.randombytes_buf(rand);
@@ -63,6 +61,7 @@ const doDHT = async () => {
   await dhtA.ready();
 
   const server = dhtA.createServer(conn => {
+    console.debug('DHT connection');
     alert('Got connection');
   });
   await server.listen();
